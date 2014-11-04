@@ -170,6 +170,16 @@ function truncateItems()
     $query = mysql_query($sql,$connection);
 }
 
+function cleanText($text)
+{
+    $text = addslashes($text);
+    $order   = array("\r\n", "\n", "\r");
+    $replace = '<br />';
+    $text = str_replace($order, $replace, $text);
+
+    return $text;
+}
+
 function saveItems($items)
 {
     global $connection;
