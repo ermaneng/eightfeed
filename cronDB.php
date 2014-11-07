@@ -28,6 +28,7 @@ function getFeedSources(){
     return $array;
 }
 
+
 function getItems ($feedSources)
 {
     global $connection;
@@ -36,10 +37,24 @@ function getItems ($feedSources)
 
     foreach ($feedSources as $feed) {
 
+        //$xml = @file_get_contents($feed->url, 0, $ctx);
+        
+        $curl_opt = array
+        (
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_USERAGENT        => 'Firefox / 2.0.16',
+            CURLOPT_FOLLOWLOCATION => TRUE
+        );
 
+        $curl = curl_init();
+        curl_setopt($curl , CURLOPT_URL , $feed->url );
+        curl_setopt_array($curl , $curl_opt);
+        $xml = curl_exec($curl);
+        curl_close($curl);
+        
 
-        $xml = @file_get_contents($feed->url);
         if($xml === FALSE){
+            echo "xml is false";
         }
         else{
             $xml = str_replace(array('<media:', '</media:'), array('<', '</'), $xml);
@@ -174,9 +189,9 @@ function cleanText($text)
 {
     $text = addslashes($text);
     $order   = array("\r\n", "\n", "\r");
-    $replace = '<br />';
+    $replace = '';
     $text = str_replace($order, $replace, $text);
-
+    $text = str_replace('"', '\"', $text);
     return $text;
 }
 
@@ -207,7 +222,7 @@ function saveItems($items)
 
         foreach ($sentDataItem as $key => $value) 
         {
-            $sentDataItem[$key] = addslashes($value);
+            $sentDataItem[$key] = cleanText($value);
         }      
 
 

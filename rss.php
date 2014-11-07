@@ -27,7 +27,7 @@ function formatDate($date)
     else if ($m=="08"){$M="Ağustos";}
     else if ($m=="09"){$M="Eylül";}
     else if ($m=="10"){$M="Ekim";}
-    else if ($m=="11"){$My="Kasım";}
+    else if ($m=="11"){$M="Kasım";}
     else if ($m=="12"){$M="Aralık";}
     
     return $d." ".$M." ".$H.":".$i;
