@@ -1,6 +1,8 @@
 ﻿<?php
 require_once 'connection.php';
 
+
+
 function printArray($array)
 {
     echo"<pre>";
