@@ -130,7 +130,6 @@ function customImageFileName($filename)
 {
 	$filename = convertToTR($filename);
 
-echo $filename."<br>";
 	if (strpos($filename, "im.haberturk.com") && strpos($filename, "htufak"))
 	{
 		$filename = str_replace("htufak", "detay", $filename);
@@ -139,7 +138,6 @@ echo $filename."<br>";
 	{
 		$filename = str_replace("thumb.jpg", "hmedium.jpg", $filename);	
 	}
-	echo $filename."<br>";
 	return $filename;
 }
 
