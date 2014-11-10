@@ -65,12 +65,20 @@ function getItems ($feedSources)
             
 
             if(is_object($xml)){
-                 foreach ($xml->xpath('/rss//item') as $item) {
-                    $item->addChild('feed_hashtag',$feed->hashtag);
-                    //printArray($item);
-                    //echo $item->pubDate;
+                if(sizeof($xml->xpath('/rss//item'))>0){
+                     foreach ($xml->xpath('/rss//item') as $item) {
+                        $item->addChild('feed_hashtag',$feed->hashtag);
+                    }
+                    $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,15));
                 }
-                $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,8));
+                else{
+                    foreach ($xml->xpath('/feed//entry') as $item) {
+                        $item->addChild('feed_hashtag',$feed->hashtag);
+                        $item->addChild('pubDate',$item->published);
+                        $item->addChild('description',$item->summary);
+                    }
+                    $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,15));
+                }
             }
         }
 
