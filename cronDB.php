@@ -1,6 +1,102 @@
-﻿<?php
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ </head>
+ <body>
+ 	
+ 
+<?php
 require_once 'connection.php';
+function convertToTR($text)
+{
+	
+	//8859-1 normal
+	$text = str_replace("&#286;",	"Ğ",$text);
+	$text = str_replace("&Uuml;",	"Ü",$text);
+	$text = str_replace("&#350;",	"Ş",$text);
+	$text = str_replace("&#304;",	"İ",$text);
+	$text = str_replace("&Ouml;",	"Ö",$text);
+	$text = str_replace("&#Ccedil;","Ç",$text);
 
+	$text = str_replace("&#287;",	"ğ",$text);
+	$text = str_replace("&uuml;",	"ü",$text);
+	$text = str_replace("&#351;",	"ş",$text);
+	$text = str_replace("&#305;",	"ı",$text);
+	$text = str_replace("&ouml;",	"ö",$text);
+	$text = str_replace("&ccedil;",	"ç",$text);
+
+
+	//converted to windows-1254 from utf-8
+	$text = str_replace("ÄŸ",	"ğ",$text);
+	$text = str_replace("Ã¼",	"ü",$text);
+	$text = str_replace("ÅŸ",	"ş",$text);
+	$text = str_replace("Ä±",	"ı",$text);
+	$text = str_replace("Ã¶",	"ö",$text);
+	$text = str_replace("Ã§",	"ç",$text);
+
+	$text = str_replace("Ãœ",	"Ü",$text);
+	$text = str_replace("Ä°",	"İ",$text);
+	$text = str_replace("Ã–",	"Ö",$text);
+	$text = str_replace("Ã‡",	"Ç",$text);
+	$text = str_replace("Ä",	"Ğ",$text);
+	$text = str_replace("Å",	"Ş",$text);
+
+
+	//converted to 8859-1 from utf-8
+	$text = str_replace("ð",	"ğ",$text);
+	$text = str_replace("þ",	"ş",$text);
+	$text = str_replace("ý",	"ı",$text);
+
+	$text = str_replace("Ý",	"İ",$text);
+	$text = str_replace("Ð",	"Ğ",$text);
+	$text = str_replace("Þ",	"Ş",$text);
+
+
+	//uel decode
+	$text = str_replace("%C4%B1","%FD",$text);
+	$text = str_replace("%C4%B0","%DD",$text);
+	$text = str_replace("%C4%9F","%F0",$text);
+	$text = str_replace("%C4%9E","%D0",$text);
+	$text = str_replace("%C3%BC","%FC",$text);
+	$text = str_replace("%C3%9C","%DC",$text);
+	$text = str_replace("%C5%9F","%FE",$text);
+	$text = str_replace("%C5%9E","%DE",$text);
+	$text = str_replace("%C3%B6","%F6",$text);
+	$text = str_replace("%C3%96","%D6",$text);
+	$text = str_replace("%C3%A7","%E7",$text);
+	$text = str_replace("%C3%87","%C7",$text);
+	$text = str_replace("%FD","ı",$text);
+	$text = str_replace("%DD","İ",$text);
+	$text = str_replace("%F0","ğ",$text);
+	$text = str_replace("%D0","Ğ",$text);
+	$text = str_replace("%FC","ü",$text);
+	$text = str_replace("%DC","Ü",$text);
+	$text = str_replace("%FE","ş",$text);
+	$text = str_replace("%DE","Ş",$text);
+	$text = str_replace("%F6","ö",$text);
+	$text = str_replace("%D6","Ö",$text);
+	$text = str_replace("%E7","ç",$text);
+	$text = str_replace("%C7","Ç",$text);
+
+	//ajax decode
+	$word=str_replace("%u011F","ğ",$word);
+	$word=str_replace("%FC","ü",$word);
+	$word=str_replace("%u015F","ş",$word);
+	$word=str_replace("%u0131","ı",$word);	
+	$word=str_replace("%F6","ö",$word);
+	$word=str_replace("%E7","ç",$word);
+	$word=str_replace("%u011E","Ğ",$word);
+	$word=str_replace("%DC","Ü",$word);
+	$word=str_replace("%u015E","Ş",$word);
+	$word=str_replace("%u0130","İ",$word);
+	$word=str_replace("%D6","Ö",$word);
+	$word=str_replace("%C7","Ç",$word);
+
+	$text = mysql_real_escape_string($text);
+	//echo $text."<br><br>";
+	return $text;
+}
 
 
 function printArray($array)
@@ -30,6 +126,22 @@ function getFeedSources(){
     return $array;
 }
 
+function customImageFileName($filename)
+{
+	$filename = convertToTR($filename);
+
+echo $filename."<br>";
+	if (strpos($filename, "im.haberturk.com") && strpos($filename, "htufak"))
+	{
+		$filename = str_replace("htufak", "detay", $filename);
+	}
+	else if (strpos($filename, "media.ntvmsnbc.com") && strpos($filename, "thumb.jpg"))
+	{
+		$filename = str_replace("thumb.jpg", "hmedium.jpg", $filename);	
+	}
+	echo $filename."<br>";
+	return $filename;
+}
 
 function getItems ($feedSources)
 {
@@ -105,10 +217,10 @@ function getItems ($feedSources)
 
 
         if($img_src!==""){
-            $item->addChild('imgsrc',$img_src);
+            $item->addChild('imgsrc',customImageFileName($img_src));
         }
         else if($media_src!==""){
-            $item->addChild('imgsrc',$media_src);
+            $item->addChild('imgsrc',customImageFileName($media_src));
         }
         else{
             $item->addChild('imgsrc',"");
@@ -117,8 +229,8 @@ function getItems ($feedSources)
 
 
         if(!empty($item->imgsrc)){
-
             $file = $item->imgsrc;
+
             $file_headers = @get_headers($file);
             if(substr($file_headers[0],0,12) == 'HTTP/1.1 404') {
                 $exists = false;
@@ -291,3 +403,5 @@ execute();
 if (isset($query)){@mysql_free_result($query);}
 mysql_close($connection);
 ?>
+</body>
+</html>
