@@ -216,7 +216,6 @@ function getItems ($feedSources)
         }
 
         $media_src = $item->thumbnail["url"];
-        echo $media_src . " - " . $item->thumbnail["url"];
 
 
         if($img_src!==""){
