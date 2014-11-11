@@ -163,15 +163,13 @@ function getItems ($feedSources)
         curl_setopt_array($curl , $curl_opt);
         $xml = curl_exec($curl);
         curl_close($curl);
-        
 
         if($xml === FALSE){
             echo "xml is false";
         }
         else{
-            $xml = str_replace(array('<media:', '</media:'), array('<', '</'), $xml);
-            $xml = @simplexml_load_string($xml);
-
+            $xml = str_replace(array('<media:', '</media:'), array('<', '</'), $xml);            
+            $xml = simplexml_load_string($xml);                        
             
 
             if(is_object($xml)){
@@ -182,12 +180,18 @@ function getItems ($feedSources)
                     $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,15));
                 }
                 else{
-                    foreach ($xml->xpath('/feed//entry') as $item) {
-                        $item->addChild('feed_hashtag',$feed->hashtag);
-                        $item->addChild('pubDate',$item->published);
-                        $item->addChild('description',$item->summary);
+                    $cnt = 0;
+                    foreach ($xml->entry as $item) {
+                        $cnt++;
+                        if($cnt<15){
+                            $item->addChild('feed_hashtag',$feed->hashtag);
+                            $item->addChild('pubDate',$item->published);
+                            $item->addChild('description',$item->summary);
+                            $item->addChild('thumbnail');
+                            $item->thumbnail["url"] = $item->link->content->thumbnail[1]["url"];                            
+                            array_push($entries, $item);
+                        }
                     }
-                    $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,15));
                 }
             }
         }
@@ -212,6 +216,7 @@ function getItems ($feedSources)
         }
 
         $media_src = $item->thumbnail["url"];
+        echo $media_src . " - " . $item->thumbnail["url"];
 
 
         if($img_src!==""){
