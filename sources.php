@@ -17,7 +17,7 @@ function getItems()
     
    
 
-    $sql = "SELECT hashtag AS id, feed_name AS name, logo FROM feed_sources WHERE active = 1";
+    $sql = "SELECT hashtag AS id, feed_name AS name, logo FROM feed_sources WHERE active = 1 ORDER BY name ASC";
     
 
     $query = mysql_query($sql,$connection);

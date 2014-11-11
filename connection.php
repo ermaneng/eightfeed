@@ -4,8 +4,8 @@
 # HTTP="true"
 $hostname_connection = "localhost";
 $database_connection = "eightfeed";
-$username_connection = "root";
-$password_connection = "qweasd";
+$username_connection = "ef";
+$password_connection = "Bedbaht1-";
 $connection = mysql_pconnect($hostname_connection, $username_connection, $password_connection) or trigger_error(mysql_error(),E_USER_ERROR); 
 
 //select db
