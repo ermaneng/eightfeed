@@ -192,6 +192,7 @@ function getItems ($feedSources)
                             $item->addChild('pubDate',$item->published);
                             $item->addChild('description',$item->summary);
                             $item->addChild('thumbnail');
+                            $item->addChild('link',$item->link["href"]);
                             $item->thumbnail["url"] = $item->link->content->thumbnail[1]["url"];                            
                             array_push($entries, $item);
                         }
