@@ -138,6 +138,10 @@ function customImageFileName($filename)
 	{
 		$filename = str_replace("thumb.jpg", "hmedium.jpg", $filename);	
 	}
+    else if (strpos($filename, "turkiyegazetesi.com.tr") && strpos($filename, "113x"))
+    {
+        $filename = str_replace("113x", "", $filename); 
+    }
 	return $filename;
 }
 
