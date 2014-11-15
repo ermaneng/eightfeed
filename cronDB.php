@@ -320,7 +320,7 @@ function cleanText($text)
     $order   = array("\r\n", "\n", "\r");
     $replace = '';
     $text = str_replace($order, $replace, $text);
-    $text = str_replace('"', '\"', $text);
+    //$text = str_replace('"', '\"', $text);
     return $text;
 }
 
