@@ -1,6 +1,8 @@
 ﻿<?php
 require_once 'connection.php';
 
+$MIN_ITEM_COUNT = 200;
+
 function printArray($array)
 {
     echo"<pre>";
@@ -34,15 +36,54 @@ function formatDate($date)
     return $d." ".$M." ".$H.":".$i;
 }
 
-
 function getItems()
 {
     global $connection;
+    global $MIN_ITEM_COUNT;
 
     $sources = $_GET["sources"];
+
     if (!empty($sources)){$sources = explode(",",$sources);}
+    if (count($sources)==0)
+    {
+        //get all sources
+        $sources = array();
+        $sql = sprintf("SELECT hashtag FROM feed_sources");
+        $query = mysql_query($sql,$connection);
+        $total = mysql_num_rows($query);
+        for ($i=0;$i<$total;$i++)
+        {
+            $item = mysql_result($query,$i,"hashtag");
+            array_push($sources,$item);
+        }
+
+    }
     
-   
+
+    $limitForEachSource = ceil($MIN_ITEM_COUNT / count($sources));
+    
+
+    $data = array();
+
+    foreach ($sources as $value)
+    {
+        $sql = sprintf("SELECT fs.feed_name, i.title, i.link, i.pubdate, i.guid, i.description, i.imgWidth, i.imgHeight, i.imgsrc, i.feed_hashtag FROM items AS i, feed_sources AS fs WHERE fs.hashtag = i.feed_hashtag AND i.feed_hashtag = '%s' ORDER BY pubdate DESC LIMIT 0, %d",$value,$limitForEachSource);
+        $query = mysql_query($sql,$connection);
+        $total = mysql_num_rows($query) ;
+
+        for ($i=0;$i<$total;$i++)
+        {
+            $item = mysql_fetch_assoc($query);
+            $item["orderTime"] = $item["pubdate"];
+            $item["pubdate"] = formatDate($item["pubdate"]);
+
+
+            array_push($data, $item);
+        }
+    }
+
+
+    /*    
 
     $sql = "SELECT fs.feed_name, i.title, i.link, i.pubdate, i.guid, i.description, i.imgWidth, i.imgHeight, i.imgsrc, i.feed_hashtag FROM items AS i, feed_sources AS fs WHERE fs.hashtag = i.feed_hashtag";
 
@@ -60,10 +101,11 @@ function getItems()
         $sql .= sprintf(" AND i.feed_hashtag IN(%s)",$inSourcesString);   
     }
     $sql .= " ORDER BY pubdate DESC LIMIT 0, 200";
-    
+   
 
     $query = mysql_query($sql,$connection);
     $total = mysql_num_rows($query) ;
+    echo "-->".$total;
 
     
     $data = array();
@@ -74,6 +116,10 @@ function getItems()
 
         array_push($data, $item);
     }
+    */
+    usort($data,function($x,$y){
+        return $y["orderTime"] - $x["orderTime"];
+    });
 
     return $data;
 }

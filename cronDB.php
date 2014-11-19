@@ -8,6 +8,9 @@
  
 <?php
 require_once 'connection.php';
+
+$ITEMS_PER_NEWSPAPER_LIMIT = 100; //0 is infinite
+
 function convertToTR($text)
 {
 	
@@ -181,13 +184,22 @@ function getItems ($feedSources)
                      foreach ($xml->xpath('/rss//item') as $item) {
                         $item->addChild('feed_hashtag',$feed->hashtag);
                     }
-                    $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,15));
+                    
+                    if ($ITEMS_PER_NEWSPAPER_LIMIT)
+                    {
+                        $entries = array_merge($entries, array_slice($xml->xpath('/rss//item'),0,$ITEMS_PER_NEWSPAPER_LIMIT));    
+                    }
+                    else
+                    {
+                        $entries = array_merge($entries, $xml->xpath('/rss//item'));
+                    }
+                    
                 }
                 else{
                     $cnt = 0;
                     foreach ($xml->entry as $item) {
                         $cnt++;
-                        if($cnt<15){
+                        if(($ITEMS_PER_NEWSPAPER_LIMIT && $cnt<=$ITEMS_PER_NEWSPAPER_LIMIT) || !$ITEMS_PER_NEWSPAPER_LIMIT){
                             $item->addChild('feed_hashtag',$feed->hashtag);
                             $item->addChild('pubDate',$item->published);
                             $item->addChild('description',$item->summary);
