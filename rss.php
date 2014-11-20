@@ -18,6 +18,7 @@ function formatDate($date)
     $H=substr($date,8,2);
     $i=substr($date,10,2);
     $s=substr($date,12,2);
+    $M="";
 
     if ($m=="01"){$M="Ocak";}
     else if ($m=="02"){$M="Şubat";}
@@ -83,40 +84,6 @@ function getItems()
     }
 
 
-    /*    
-
-    $sql = "SELECT fs.feed_name, i.title, i.link, i.pubdate, i.guid, i.description, i.imgWidth, i.imgHeight, i.imgsrc, i.feed_hashtag FROM items AS i, feed_sources AS fs WHERE fs.hashtag = i.feed_hashtag";
-
-    if (count($sources)>0)
-    {
-        $inSourcesString = "";
-        foreach ($sources as $value)
-        {
-            $inSourcesString.="'".$value."',";
-        }
-
-        $inSourcesString = rtrim($inSourcesString, ",");
-
-
-        $sql .= sprintf(" AND i.feed_hashtag IN(%s)",$inSourcesString);   
-    }
-    $sql .= " ORDER BY pubdate DESC LIMIT 0, 200";
-   
-
-    $query = mysql_query($sql,$connection);
-    $total = mysql_num_rows($query) ;
-    echo "-->".$total;
-
-    
-    $data = array();
-    for ($i=0;$i<$total;$i++)
-    {
-        $item = mysql_fetch_assoc($query);
-        $item["pubdate"] = formatDate($item["pubdate"]);
-
-        array_push($data, $item);
-    }
-    */
     usort($data,function($x,$y){
         return $y["orderTime"] - $x["orderTime"];
     });
@@ -163,7 +130,6 @@ function execute()
     //PRINT TO PAGE
     /////////////////////////////
     printResponse($items);
-
 }
 
 

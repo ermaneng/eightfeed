@@ -9,7 +9,6 @@
 <?php
 require_once 'connection.php';
 
-$ITEMS_PER_NEWSPAPER_LIMIT = 100; //0 is infinite
 
 function convertToTR($text)
 {
@@ -83,18 +82,18 @@ function convertToTR($text)
 	$text = str_replace("%C7","Ç",$text);
 
 	//ajax decode
-	$word=str_replace("%u011F","ğ",$word);
-	$word=str_replace("%FC","ü",$word);
-	$word=str_replace("%u015F","ş",$word);
-	$word=str_replace("%u0131","ı",$word);	
-	$word=str_replace("%F6","ö",$word);
-	$word=str_replace("%E7","ç",$word);
-	$word=str_replace("%u011E","Ğ",$word);
-	$word=str_replace("%DC","Ü",$word);
-	$word=str_replace("%u015E","Ş",$word);
-	$word=str_replace("%u0130","İ",$word);
-	$word=str_replace("%D6","Ö",$word);
-	$word=str_replace("%C7","Ç",$word);
+	$text = str_replace("%u011F","ğ",$text);
+	$text = str_replace("%FC","ü",$text);
+	$text = str_replace("%u015F","ş",$text);
+	$text = str_replace("%u0131","ı",$text);	
+	$text = str_replace("%F6","ö",$text);
+	$text = str_replace("%E7","ç",$text);
+	$text = str_replace("%u011E","Ğ",$text);
+	$text = str_replace("%DC","Ü",$text);
+	$text = str_replace("%u015E","Ş",$text);
+	$text = str_replace("%u0130","İ",$text);
+	$text = str_replace("%D6","Ö",$text);
+	$text = str_replace("%C7","Ç",$text);
 
 	$text = mysql_real_escape_string($text);
 	//echo $text."<br><br>";
@@ -151,6 +150,7 @@ function customImageFileName($filename)
 function getItems ($feedSources)
 {
     global $connection;
+    $ITEMS_PER_NEWSPAPER_LIMIT = 100;
 
     $entries = array();
 

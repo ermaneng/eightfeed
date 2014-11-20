@@ -10,11 +10,7 @@ function printArray($array)
 
 function getItems()
 {
-    global $connection;
-
-    $sources = $_GET["sources"];
-    if (!empty($sources)){$sources = explode(",",$sources);}
-    
+    global $connection;    
    
 
     $sql = "SELECT hashtag AS id, feed_name AS name, logo FROM feed_sources WHERE active = 1 ORDER BY name ASC";
@@ -37,31 +33,19 @@ function getItems()
 
 function printResponse($data)
 {
-    $mode = $_GET["mode"];
     $callback = $_GET["callback"]; 
-
-    if (empty($mode)) $mode = "json";
-
-    if ($mode == "json")
+    $output = "";
+    if (!empty($callback))
     {
-        $output = "";
-        if (!empty($callback))
-        {
-            $output = $callback."(".json_encode($data).")";
-        }
-        else
-        {
-            $output =  json_encode($data);
-        }
-
-        header('Content-type: application/javascript');
-        echo $output;
-        
+        $output = $callback."(".json_encode($data).")";
     }
-    else if ($mode == "dump")
+    else
     {
-        printArray($data);
+        $output =  json_encode($data);
     }
+
+    header('Content-type: application/javascript');
+    echo $output;
 }
 
 function execute()
