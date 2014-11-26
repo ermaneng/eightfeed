@@ -109,8 +109,6 @@ function getFeedSources(){
 
     $array = array();
 
-
-
     for ($i=0;$i<$total;$i++)
     {
         $data = mysql_fetch_assoc($query);
@@ -170,6 +168,8 @@ function getItems ($feedSources)
             echo "xml is false";
         }
         else{
+            $xml = preg_replace('/&[^; ]{0,6}.?/e', "((substr('\\0',-1) == ';') ? '\\0' : '&amp;'.substr('\\0',1))", $xml);
+            $xml = preg_replace('/&(?!;{6})/', '&amp;', $xml);
             $xml = str_replace(array('<media:', '</media:'), array('<', '</'), $xml);            
             $xml = simplexml_load_string($xml);                        
             
@@ -262,6 +262,10 @@ function getItems ($feedSources)
                 $width = "0";
                 $height = "0";
             }
+
+            //$width = "0";
+            //$height = "0";
+
             $item->addChild('imgWidth',  $width);
             $item->addChild('imgHeight',  $height);
         }
@@ -395,7 +399,9 @@ function execute()
     //GET ENTRIES
     /////////////////////////////
     $items = getItems($feedSources);
+
     printArray($items);
+
     //SAVE ENTRIES TO DB
     /////////////////////////////
     saveItems($items);
