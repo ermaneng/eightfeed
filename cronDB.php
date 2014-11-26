@@ -1,12 +1,4 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- </head>
- <body>
- 	
- 
-<?php
+﻿<?php
 require_once 'connection.php';
 
 
@@ -155,7 +147,7 @@ function getItems ($feedSources)
     $entries = array();
 
     foreach ($feedSources as $feed) {
-
+        //echo $feed->url . "   <br>  " . time() . "<br>";
         //$xml = @file_get_contents($feed->url, 0, $ctx);
         
         $curl_opt = array
@@ -170,6 +162,9 @@ function getItems ($feedSources)
         curl_setopt_array($curl , $curl_opt);
         $xml = curl_exec($curl);
         curl_close($curl);
+
+        //echo time() . "<br>----------------------------------------------<br>";
+
 
         if($xml === FALSE){
             echo "xml is false";
@@ -397,7 +392,6 @@ function execute()
     /////////////////////////////
     $feedSources = getFeedSources();
 
-
     //GET ENTRIES
     /////////////////////////////
     $items = getItems($feedSources);
@@ -421,6 +415,5 @@ execute();
 /////////////////////////////
 if (isset($query)){@mysql_free_result($query);}
 mysql_close($connection);
+
 ?>
-</body>
-</html>
