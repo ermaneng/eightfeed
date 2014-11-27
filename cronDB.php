@@ -168,8 +168,8 @@ function getItems ($feedSources)
             echo "xml is false";
         }
         else{
-            $xml = preg_replace('/&[^; ]{0,6}.?/e', "((substr('\\0',-1) == ';') ? '\\0' : '&amp;'.substr('\\0',1))", $xml);
-            $xml = preg_replace('/&(?!;{6})/', '&amp;', $xml);
+            //$xml = preg_replace('/&[^; ]{0,6}.?/e', "((substr('\\0',-1) == ';') ? '\\0' : '&amp;'.substr('\\0',1))", $xml);
+            //$xml = preg_replace('/&(?!;{6})/', '&amp;', $xml);
             $xml = str_replace(array('<media:', '</media:'), array('<', '</'), $xml);            
             $xml = simplexml_load_string($xml);                        
             
