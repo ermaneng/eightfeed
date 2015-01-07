@@ -68,7 +68,7 @@ function getItems()
 
     foreach ($sources as $value)
     {
-        $sql = sprintf("SELECT fs.feed_name, i.title, i.link, i.pubdate, i.guid, i.description, i.imgWidth, i.imgHeight, i.imgsrc, i.feed_hashtag FROM items AS i, feed_sources AS fs WHERE fs.hashtag = i.feed_hashtag AND i.feed_hashtag = '%s' ORDER BY pubdate DESC LIMIT 0, %d",$value,$limitForEachSource);
+        $sql = sprintf("SELECT fs.feed_name, i.title, i.link, i.pubdate, i.guid, i.description, i.summary, i.imgWidth, i.imgHeight, i.imgsrc, i.feed_hashtag FROM items AS i, feed_sources AS fs WHERE fs.hashtag = i.feed_hashtag AND i.feed_hashtag = '%s' ORDER BY pubdate DESC LIMIT 0, %d",$value,$limitForEachSource);
         $query = mysql_query($sql,$connection);
         $total = mysql_num_rows($query) ;
 
@@ -77,6 +77,12 @@ function getItems()
             $item = mysql_fetch_assoc($query);
             $item["orderTime"] = $item["pubdate"];
             $item["pubdate"] = formatDate($item["pubdate"]);
+            
+            if(trim($item["summary"]) !== ''){
+                //echo '<script>console.log("--'.$item["summary"].'--")</script>';
+                //echo $item["summary"] . " -- <br>";
+                $item["description"]=$item["summary"];
+            }
 
 
             array_push($data, $item);

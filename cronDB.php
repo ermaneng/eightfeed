@@ -178,6 +178,7 @@ function getItems ($feedSources)
                 if(sizeof($xml->xpath('/rss//item'))>0){
                      foreach ($xml->xpath('/rss//item') as $item) {
                         $item->addChild('feed_hashtag',$feed->hashtag);
+                        $item->addChild('summary'," ");
                     }
                     
                     if ($ITEMS_PER_NEWSPAPER_LIMIT)
@@ -196,17 +197,12 @@ function getItems ($feedSources)
                         $cnt++;
                         if(($ITEMS_PER_NEWSPAPER_LIMIT && $cnt<=$ITEMS_PER_NEWSPAPER_LIMIT) || !$ITEMS_PER_NEWSPAPER_LIMIT){
                             $item->addChild('feed_hashtag',$feed->hashtag);
-                            $item->addChild('pubDate',$item->published);
-                            if(!isset($item->description)){
-                                $item->addChild('description',(string) $item->summary);
-                            }
-                            else{
-                                $item->description = (string) $item->summary;                                
-                            }
-                            
+                            $item->addChild('pubDate',$item->published);                            
+                            $item->addChild('summary',(string) $item->summary);                            
+                            $item->addChild('description',(string) $item->description);                            
                             $item->addChild('thumbnail');
-                            $item->link = (string) $item->link["href"];
                             $item->thumbnail["url"] = $item->link->content->thumbnail[1]["url"];                            
+                            $item->link = (string) $item->link["href"];                            
                             array_push($entries, $item);
                         }
                     }
@@ -281,7 +277,9 @@ function getItems ($feedSources)
         $item->addChild('guid', preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", (string) $item->link));
         $item->title = strip_tags(preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", (string) $item->title));
 
+        $item->summary = mb_substr(strip_tags(preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", (string) $item->summary)),0,10000,"UTF-8");
         $item->description = mb_substr(strip_tags(preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", (string) $item->description)),0,10000,"UTF-8");
+        
     }
 
     return $entries;
@@ -348,8 +346,7 @@ function saveItems($items)
 
     for ($i=0; $i<count($items); $i++)
     {
-        $item = $items[$i];
-        
+        $item = $items[$i];        
 
         $sentDataItem = array(
             "item_id"       => $i+1,
@@ -358,6 +355,7 @@ function saveItems($items)
             "pubdate"       => formatDate($item->pubDate),
             "guid"          => $item->guid[0],
             "description"   => $item->description,
+            "summary"       => $item->summary,
             "imgWidth"      => $item->imgWidth,
             "imgHeight"     => $item->imgHeight,  
             "imgsrc"        => $item->imgsrc,  
@@ -372,13 +370,14 @@ function saveItems($items)
         }      
 
 
-        $sql = sprintf("INSERT INTO items (item_id, title, link, pubdate, guid, description, imgWidth, imgHeight, imgsrc, feed_hashtag) VALUES (%d, '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s'); ",
+        $sql = sprintf("INSERT INTO items (item_id, title, link, pubdate, guid, description, summary, imgWidth, imgHeight, imgsrc, feed_hashtag) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s'); ",
         $sentDataItem["item_id"] , 
         $sentDataItem["title"] , 
         $sentDataItem["link"] , 
         $sentDataItem["pubdate"] , 
         $sentDataItem["guid"] , 
         $sentDataItem["description"] , 
+        $sentDataItem["summary"] , 
         $sentDataItem["imgWidth"] , 
         $sentDataItem["imgHeight"] , 
         $sentDataItem["imgsrc"] , 
