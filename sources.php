@@ -13,7 +13,7 @@ function getItems()
     global $connection;    
    
 
-    $sql = "SELECT hashtag AS id, feed_name AS name, logo FROM feed_sources WHERE active = 1 ORDER BY name ASC";
+    $sql = "SELECT hashtag AS id, feed_name AS name, logo, color AS feed_color FROM feed_sources WHERE active = 1 ORDER BY name ASC";
     
 
     $query = mysql_query($sql,$connection);

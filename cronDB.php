@@ -197,9 +197,15 @@ function getItems ($feedSources)
                         if(($ITEMS_PER_NEWSPAPER_LIMIT && $cnt<=$ITEMS_PER_NEWSPAPER_LIMIT) || !$ITEMS_PER_NEWSPAPER_LIMIT){
                             $item->addChild('feed_hashtag',$feed->hashtag);
                             $item->addChild('pubDate',$item->published);
-                            $item->addChild('description',$item->summary);
+                            if(!isset($item->description)){
+                                $item->addChild('description',(string) $item->summary);
+                            }
+                            else{
+                                $item->description = (string) $item->summary;                                
+                            }
+                            
                             $item->addChild('thumbnail');
-                            $item->addChild('link',$item->link["href"]);
+                            $item->link = (string) $item->link["href"];
                             $item->thumbnail["url"] = $item->link->content->thumbnail[1]["url"];                            
                             array_push($entries, $item);
                         }
