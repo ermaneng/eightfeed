@@ -1,7 +1,7 @@
 ﻿<?php
 require_once 'connection.php';
 
-$MIN_ITEM_COUNT = 200;
+$MIN_ITEM_COUNT = 100;
 
 function printArray($array)
 {
